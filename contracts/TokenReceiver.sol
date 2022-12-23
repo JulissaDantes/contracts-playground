@@ -14,20 +14,26 @@ contract TokenReceiver is ERC721Holder {
 
     function onERC721Received(
         address sender,
-        address,
+        address from,
         uint256 tokenId,
         bytes memory 
     ) public virtual override returns (bytes4) {
 
-        // re-enter tokens contract
-        console.log("Came to the receiver", address(this));
-        token.safeTransferFrom(sender, address(this), tokenId);
-        //Cannot use delegation because the call to this contract is made frm the contract, not from the user.
-        /*(bool ok, ) = address(token).delegatecall(
-             abi.encodeCall(token.possibleUnsafeTransfer, (sender, address(this), tokenId))
-        );
-        require(ok);*/
-        console.log("Returning");
+        console.log("Came to the receiver", address(this), from);
+        if (from == address(0)) {
+            token.safeMint(address(this), tokenId + 1);
+            console.log("Returning from mint");
+        } else {
+            // re-enter tokens contract
+            token.safeTransferFrom(sender, address(this), tokenId);
+            //Cannot use delegation because the call to this contract is made frm the contract, not from the user.
+            /*(bool ok, ) = address(token).delegatecall(
+                abi.encodeCall(token.possibleUnsafeTransfer, (sender, address(this), tokenId))
+            );
+            require(ok);*/
+            console.log("Returning from transfer");
+        }
+        
         return this.onERC721Received.selector; 
     }
 }

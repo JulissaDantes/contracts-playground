@@ -15,7 +15,7 @@ describe("MyToken", function () {
     expect(await instance.name()).to.equal("LeToken");
   });
 
-  it("Test reentrancy", async function () {
+  it("Test reentrancy in transfers", async function () {
     const tokenOwner = await ethers.getSigner();
     const ContractFactory = await ethers.getContractFactory("TokenReceiver");
     const attacker = await ContractFactory.deploy(instance.address);
@@ -31,5 +31,18 @@ describe("MyToken", function () {
     await instance.possibleUnsafeTransfer(tokenOwner.address, attacker.address, 1, {from: tokenOwner.address});
     // take all token due to reentrancy
     expect(await instance.balanceOf(attacker.address)).to.be.eq(1);
+  });
+
+  it.only("Test reentrancy in minting", async function () {
+    const ContractFactory = await ethers.getContractFactory("TokenReceiver");
+    const attacker = await ContractFactory.deploy(instance.address);
+    await attacker.deployed();
+    //Lets say accounts are whitelisted to mint but only once
+    await instance.whitelist(attacker.address);
+    // perform the minting
+    await instance.mintWhiteListedNFTs(attacker.address, 3);
+    //await instance.possibleUnsafeTransfer(tokenOwner.address, attacker.address, 1, {from: tokenOwner.address});
+    // take all token due to reentrancy
+    expect(await instance.balanceOf(attacker.address)).to.be.eq(3);
   });
 });
