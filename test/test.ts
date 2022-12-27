@@ -57,4 +57,16 @@ describe("MyToken", function () {
 
     await wizardToken.safeMint(wattacker.address, {from: tokenOwner.address});
   });
+
+  it.only("Test reentrancy in sub system", async function () {
+    const ContractFactory = await ethers.getContractFactory("Attackee");
+    const attackee = await ContractFactory.deploy();
+    await attackee.deployed();
+
+    const WContractFactory = await ethers.getContractFactory("Attacker");
+    const attacker = await WContractFactory.deploy(attackee.address);
+    await attacker.deployed();
+
+    await attackee.ext(attacker.address);
+  });
 });
