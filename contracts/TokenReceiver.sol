@@ -21,17 +21,13 @@ contract TokenReceiver is ERC721Holder {
 
         console.log("Came to the receiver", address(this), from);
         if (from == address(0)) {
-            token.safeMint(address(this), tokenId + 1);
             console.log("Returning from mint");
+            token.safeMint(address(this), tokenId + 1);
         } else {
+            console.log("Returning from transfer");
             // re-enter tokens contract
             token.safeTransferFrom(sender, address(this), tokenId);
-            //Cannot use delegation because the call to this contract is made frm the contract, not from the user.
-            /*(bool ok, ) = address(token).delegatecall(
-                abi.encodeCall(token.possibleUnsafeTransfer, (sender, address(this), tokenId))
-            );
-            require(ok);*/
-            console.log("Returning from transfer");
+            //Cannot use delegation because the call to this contract is made from the contract, not from the user.
         }
         
         return this.onERC721Received.selector; 
