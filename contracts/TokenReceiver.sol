@@ -2,8 +2,8 @@
 pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
-//import "@openzeppelin/contracts/token/ERC721/LeToken.sol";
 import "./LeToken.sol";
+import "./WizardToken.sol";
 import "hardhat/console.sol";
 
 contract TokenReceiver is ERC721Holder {
@@ -23,6 +23,34 @@ contract TokenReceiver is ERC721Holder {
         if (from == address(0)) {
             console.log("Returning from mint");
             token.safeMint(address(this), tokenId + 1);
+        } else {
+            console.log("Returning from transfer");
+            // re-enter tokens contract
+            token.safeTransferFrom(sender, address(this), tokenId);
+            //Cannot use delegation because the call to this contract is made from the token contract, not from the user.
+        }
+        
+        return this.onERC721Received.selector; 
+    }
+}
+
+contract WizardTokenReceiver is ERC721Holder {
+    WizardToken internal token;
+    constructor(WizardToken _token) {
+        token = _token;
+    }
+
+    function onERC721Received(
+        address sender,
+        address from,
+        uint256 tokenId,
+        bytes memory 
+    ) public virtual override returns (bytes4) {
+
+        console.log("Came to the receiver", address(this), from);
+        if (from == address(0)) {
+            console.log("Returning from mint");
+            token.safeMint(address(this));
         } else {
             console.log("Returning from transfer");
             // re-enter tokens contract
