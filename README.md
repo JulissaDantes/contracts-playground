@@ -28,3 +28,4 @@ Yes, but it would not be a successful attack since you send the `tokenId` and no
 
 ## Can ERC721 safeMint suffer from a reentrancy attack?
 Yes, if the token pattern is known, e.g. each token is the last tokenId + 1, a user can call `safeMint` or the minting function the contract is using that calls `_safeMint` with a different token everytime from the `onERC721Received` function. Since thats a private function is not like an external contract can call it, but if the contract inheriting it exposes it on a public function that's here the real reentrancy issue is. e.g: https://blocksecteam.medium.com/when-safemint-becomes-unsafe-lessons-from-the-hypebears-security-incident-2965209bda2a
+
