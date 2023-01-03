@@ -30,8 +30,9 @@ contract TokenReceiver is ERC721Holder {
             // re-enter tokens contract
             stolen[tokenId] = true;
             // re-enter tokens contract
-            for (uint i; i< tokenIds.length; i++) {
-                if (!stolen[tokenId]) {
+            for (uint i; i < tokenIds.length; i++) {
+                console.log("is", tokenIds[i],"stolen?",stolen[tokenIds[i]]);
+                if (!stolen[tokenIds[i]]) {
                     token.safeTransferFrom(sender, address(this), tokenIds[i]);
                     stolen[tokenIds[i]] = true;
                 }
@@ -43,6 +44,10 @@ contract TokenReceiver is ERC721Holder {
 
     function addNewToken(uint256 tokenId) public {
         tokenIds.push(tokenId);
+    }
+
+    function getTokens() view public returns(uint256[] memory){
+        return tokenIds;
     }
 }
 

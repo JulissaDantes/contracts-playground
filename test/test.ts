@@ -20,15 +20,15 @@ describe("MyToken", function () {
     expect(await instance.name()).to.equal("LeToken");
   });
 
-  it("Test reentrancy in transfers", async function () {
+  it.only("Test reentrancy in transfers", async function () {
     const tokenOwner = await ethers.getSigner();
 
     // mints 4 tokens
-    await instance.mint(tokenOwner.address, 1);
-    await instance.mint(tokenOwner.address, 2);
-    await instance.mint(tokenOwner.address, 3);
-    await instance.mint(tokenOwner.address, 4);
-    //console.log(await instance.methods["safeTransferFrom(address, address, uint256)"]);
+    for (let i = 1;i <= 4 ;i++) {
+      await instance.mint(tokenOwner.address, i);
+      await attacker.addNewToken(i);
+    }
+    console.log(await attacker.getTokens());
     // perform the transfer
     await instance.possibleUnsafeTransfer(tokenOwner.address, attacker.address, 1, {from: tokenOwner.address});
     // take all token due to reentrancy
@@ -58,7 +58,7 @@ describe("MyToken", function () {
     await wizardToken.safeMint(wattacker.address, {from: tokenOwner.address});
   });
 
-  it.only("Test reentrancy in sub system", async function () {
+  it("Test reentrancy in sub system", async function () {
     const ContractFactory = await ethers.getContractFactory("Attackee");
     const attackee = await ContractFactory.deploy();
     await attackee.deployed();
