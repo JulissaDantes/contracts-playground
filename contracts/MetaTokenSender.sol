@@ -15,24 +15,30 @@ contract RandomToken is ERC20 {
 contract TokenSender {
     using ECDSA for bytes32;
 
+    // New mapping
+    mapping(bytes32 => bool) executed;
+
     function transfer(
         address sender,
         uint256 amount,
         address recipient,
         address tokenContract,
+        uint nonce,
         bytes memory signature
     ) public {
         // Calculate the hash of all the requisite values
-        bytes32 messageHash = getHash(sender, amount, recipient, tokenContract);
+        bytes32 messageHash = getHash(sender, amount, recipient, tokenContract,nonce);
         // Convert it to a signed message hash
         bytes32 signedMessageHash = messageHash.toEthSignedMessageHash();
-
+        // Require that this signature hasn't already been executed
+        require(!executed[signedMessageHash], "Already executed!");
         // Extract the original signer address
         address signer = signedMessageHash.recover(signature);
 
         // Make sure signer is the person on whose behalf we're executing the transaction
         require(signer == sender, "Signature does not come from sender");
-
+        // Mark this signature as having been executed now
+        executed[signedMessageHash] = true;
         // Transfer tokens from sender(signer) to recipient
         bool sent = ERC20(tokenContract).transferFrom(
             sender,
@@ -47,11 +53,11 @@ contract TokenSender {
         address sender,
         uint256 amount,
         address recipient,
-        address tokenContract
+        address tokenContract, uint nonce
     ) public pure returns (bytes32) {
         return
             keccak256(
-                abi.encodePacked(sender, amount, recipient, tokenContract)
+                abi.encodePacked(sender, amount, recipient, tokenContract,nonce)
             );
     }
 }
