@@ -25,6 +25,10 @@ const config: HardhatUserConfig = {
       url: SEPOLIA_URL,
       accounts: [test_account],
     },
+    zkEVM: {
+      url: 'https://rpc.public.zkevm-test.net',
+      accounts: [PRIVATE_KEY],
+    },
   },
 };
 
