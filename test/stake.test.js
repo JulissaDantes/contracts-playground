@@ -16,7 +16,7 @@ describe('Stake contract', function () {
 
   beforeEach(async function () {
     [treasury, depositor, delegate, otherDepositor] = await ethers.getSigners();
-    const Token = await ethers.getContractFactory('Token');
+    const Token = await ethers.getContractFactory('LeToken');
     token = await Token.deploy();
     const Stake = await ethers.getContractFactory('Stake');
     stake = await Stake.deploy(token.address, treasury.address, UNDELEGATE_DELAY, UNALLOCATE_DELAY, 3);
