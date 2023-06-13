@@ -9,7 +9,14 @@ const test_account = process.env.SEPOLIA_PK!;
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.11",
+    compilers: [
+      {
+        version: "0.8.11",
+      },
+      {
+        version: "0.6.12",
+      },
+    ],
     settings: {
       optimizer: {
         enabled: true,
