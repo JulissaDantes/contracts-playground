@@ -6,11 +6,10 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Checkpoints.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "hardhat/console.sol";
 
-/** THIS IS NOT PRODUCTION READY, DO NOT USE, IT HAS A BUG ON THE WITHDRAW FUNCTION */
-
-contract Stake is Ownable {
+contract Stake is Ownable, ReentrancyGuard {
     using Checkpoints for Checkpoints.History;
     using SafeERC20 for IERC20;
 
@@ -391,10 +390,11 @@ contract Stake is Ownable {
      *
      * Emits a `Withdraw` event.
      */
-    function withdraw() external {
+    function withdraw() external nonReentrant {
         uint256 amount = token.allowance(address(this), msg.sender);
+        
         token.safeTransfer(msg.sender, amount);
-
+        token.safeDecreaseAllowance(msg.sender, amount);
         emit Withdraw(msg.sender, amount);
     }
     
