@@ -33,3 +33,4 @@ Yes, if the token pattern is known, e.g. each token is the last tokenId + 1, a u
 [ ] Book club governance system
 [ ] cross chain bridge demo tutorial
 [ ] Make the cryptomyriad deploy an upgradeable system that upgrades all instances with a beacon proxy
+[ ] Rust project
