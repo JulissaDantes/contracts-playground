@@ -3,7 +3,7 @@ import { Contract, utils } from "ethers";
 import { hexZeroPad } from "ethers/lib/utils";
 import { ethers } from "hardhat";
 
-describe.only("Events", function () {
+describe("Events", function () {
   let instance: Contract;
     before(async () => {
     const ContractFactory = await ethers.getContractFactory("Evener");
