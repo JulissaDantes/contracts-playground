@@ -40,10 +40,10 @@ contract LowLevelYul {
 
         assembly {
             let halfX := add(div(x,2), 1)
-            for {let i := 2} lt(i, halfX) {i:= add(i, 1)}
+            for {let i := 2} lt(i, halfX) {i := add(i, 1)}
             {
                 if iszero(mod(x,i)){
-                    p:= 0
+                    p := 0
                     break
                 }
             }
