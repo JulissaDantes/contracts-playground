@@ -5,7 +5,37 @@ pragma solidity ^0.8.11;
 // https://docs.soliditylang.org/en/v0.8.20/yul.html#
 
 contract LowLevelYul {
+    uint256 x = 8;
     address[2] owners = [0xC09758D8fe8fF0545b8005CA2f82947E4dfd3A05, 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266];
+    //the next 2 variables are inside 1 memory slot
+    uint128 a;
+    uint128 b;
+
+    function getXSlot() external pure returns(uint256 p) {
+        assembly{
+             p := x.slot
+        }
+    }
+
+    function getASlotOffset() external pure returns(uint256 slot, uint256 offset) {
+        assembly{
+             slot := a.slot
+             offset := a.offset
+        }
+    }
+
+    function getBSlotOffset() external pure returns(uint256 slot, uint256 offset) {
+        assembly{
+             slot := b.slot
+             offset := b.offset
+        }
+    }
+    
+    function getXValue() external view returns(uint256 ret) {
+        assembly{
+                    ret := sload(x.slot) //remember that due to variable packing what's inside this slot could be several values
+                }
+    }
 
     function getValue() public view returns(uint256) {
         assembly {
