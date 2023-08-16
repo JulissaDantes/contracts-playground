@@ -64,15 +64,15 @@ contract LowLevelYul {
         require(success, "Failed");
     }
 
-    function looping(uint256 x) public pure returns (bool p) {
+    function looping(uint256 y) public pure returns (bool p) {
         // check if prime logic
         p = true;
 
         assembly {
-            let halfX := add(div(x,2), 1)
-            for {let i := 2} lt(i, halfX) {i := add(i, 1)}
+            let halfY := add(div(y,2), 1)
+            for {let i := 2} lt(i, halfY) {i := add(i, 1)}
             {
-                if iszero(mod(x,i)){
+                if iszero(mod(y,i)){
                     p := 0
                     break
                 }
