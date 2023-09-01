@@ -38,11 +38,12 @@ Yes, if the token pattern is known, e.g. each token is the last tokenId + 1, a u
 [X] Benchmark gas usage in normal erc721 functions and erc721a
 
 ### Benchmark results
-Function Name |   oz(Normal)   |   azuki | Enumerable |  Normal vs Azuki | Enumerable vs Azuki
-----------------------------------------------------------------------------------------------
-Mint          |           69478|    90654|      141416|               OZ|       Enumerable
-Batch mint    |          286984|    73923|     1189746|               OZ|       Enumerable
-Transfer      |           60996|    84861|       93024|               OZ|            Azuki
-Burn          |           61123|    61123|       54872|            Azuki|       Enumerable
+| Function Name | oz(Normal) | azuki | Enumerable | Normal vs Azuki | Enumerable vs Azuki |
+| --- | --- | --- | --- | --- | --- |
+| Mint | 69478 | 90654 | 141416 | OZ | Enumerable |
+| Batch mint | 286984 | 73923 | 1189746 | OZ | Enumerable |
+| Transfer | 60996 | 84861 | 93024 | OZ | Azuki |
+| Burn | 61123 | 61123 | 54872 | Azuki | Enumerable |
+
 
 By the numbers it doesnt look like Azuki is really that much efficient
