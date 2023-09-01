@@ -4,6 +4,7 @@ async function main() {
     const [signer1, signer2] = await ethers.getSigners();
     const OZImpl = await ethers.getContractFactory('ERC721OZ');
     const AzukiImpl = await ethers.getContractFactory('ERC721Azuki');
+    //TODO include enumerable version to benchmark
     const results = [];
 
     // Deploy the contracts
@@ -13,9 +14,7 @@ async function main() {
     const erc721a = await AzukiImpl.deploy();
     await erc721a.deployed();
 
-    // Perform benchmark transactions (e.g., mint tokens, transfer tokens, etc.)
-
-    console.log(`Benchmarking Gas Usage for ERC-721 Implementations`);
+    console.log(`\nBenchmarking Gas Usage for ERC-721 Implementations`);
     // mint
     let tx = await erc721.mint(signer1.address, 1); 
     let rc = await tx.wait();    
@@ -37,28 +36,22 @@ async function main() {
     txa = await erc721a.transferFrom(signer1.address, signer2.address, 1); 
     rca = await txa.wait();
     results.push({ functionName: "Transfer", oz: rc.gasUsed.toString(), azuki: rca.gasUsed.toString() });
-/*
+
     // burn
-    tx = await erc721.someFunction(); 
+    tx = await erc721.burn(1); 
     rc = await tx.wait();    
-    txa = await erc721a.someFunction(); 
+    txa = await erc721a.burn(1); 
     rca = await txa.wait();
     results.push({ functionName: "Burn", oz: rca.gasUsed.toString(), azuki: rca.gasUsed.toString() });
 
-    // burn batch
-    tx = await erc721.someFunction(); 
-    rc = await tx.wait();    
-    txa = await erc721a.someFunction(); 
-    rca = await txa.wait();
-    results.push({ functionName: "Batch burn", oz: rca.gasUsed.toString(), azuki: rca.gasUsed.toString() });
-*/
-    console.log("Function Name |   oz(Normal)   |   azuki ");
-    console.log("----------------------------");
+    console.log("\nFunction Name |   oz(Normal)   |   azuki | Cheaper");
+    console.log("--------------------------------------------------");
     for (let i = 0;i < results.length;i++) {
         console.log(
-            `${results[i].functionName.padEnd(13)}|${results[i].oz.toString().padStart(7)}|${results[i].azuki.toString().padStart(7)}`
+            `${results[i].functionName.padEnd(14)}|${results[i].oz.toString().padStart(16)}|${results[i].azuki.toString().padStart(9)}| ${((results[i].oz < results[i].azuki)?'OZ':'Azuki').padStart(7)}`
         );
     }
+    console.log('\n');
 }
 
 main()
