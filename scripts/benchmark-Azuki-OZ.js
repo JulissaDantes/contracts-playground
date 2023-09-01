@@ -27,7 +27,7 @@ async function main() {
     let txe = await erc721Enum.mint(signer1.address, 1); 
     let rce = await txe.wait();
 
-    results.push({ functionName: "Mint", oz: rc.gasUsed.toString(), azuki: rca.gasUsed.toString(), enumerable: rce.gasUsed.toString()});
+    results.push({ functionName: "Mint", oz: Number(rc.gasUsed.toString()), azuki: Number(rca.gasUsed.toString()), enumerable: Number(rce.gasUsed.toString())});
 
     // mint batch
     tx = await erc721.batchMint(signer1.address, [2,3,4,5,6,7,8,9,10,11]); 
@@ -36,7 +36,7 @@ async function main() {
     rca = await txa.wait();
     txe = await erc721Enum.batchMint(signer1.address, [2,3,4,5,6,7,8,9,10,11]); 
     rce = await txe.wait();
-    results.push({ functionName: "Batch mint", oz: rc.gasUsed.toString(), azuki: rca.gasUsed.toString(), enumerable: rce.gasUsed.toString() });
+    results.push({ functionName: "Batch mint", oz: Number(rc.gasUsed.toString()), azuki: Number(rca.gasUsed.toString()), enumerable: Number(rce.gasUsed.toString()) });
 
     // transfer
     tx = await erc721.transferFrom(signer1.address, signer2.address, 1); 
@@ -45,7 +45,7 @@ async function main() {
     rca = await txa.wait();
     txe = await erc721Enum.transferFrom(signer1.address, signer2.address, 1); 
     rce = await txe.wait();
-    results.push({ functionName: "Transfer", oz: rc.gasUsed.toString(), azuki: rca.gasUsed.toString(), enumerable: rce.gasUsed.toString() });
+    results.push({ functionName: "Transfer", oz: Number(rc.gasUsed.toString()), azuki: Number(rca.gasUsed.toString()), enumerable: Number(rce.gasUsed.toString()) });
 
     // burn
     tx = await erc721.burn(1); 
@@ -54,13 +54,13 @@ async function main() {
     rca = await txa.wait();
     txe = await erc721Enum.burn(1); 
     rce = await txe.wait();
-    results.push({ functionName: "Burn", oz: rca.gasUsed.toString(), azuki: rca.gasUsed.toString(), enumerable: rce.gasUsed.toString() });
+    results.push({ functionName: "Burn", oz: Number(rc.gasUsed.toString()), azuki: Number(rca.gasUsed.toString()), enumerable: Number(rce.gasUsed.toString()) });
 
     console.log("\nFunction Name |   oz(Normal)   |   azuki | Enumerable |  Normal vs Azuki | Enumerable vs Azuki");
     console.log("----------------------------------------------------------------------------------------------");
     for (let i = 0;i < results.length;i++) {
         console.log(
-            `${results[i].functionName.padEnd(14)}|${results[i].oz.toString().padStart(16)}|${results[i].azuki.toString().padStart(9)}|${results[i].enumerable.toString().padStart(12)}|${((results[i].oz < results[i].azuki)?'OZ':'Azuki').padStart(17)}|${((results[i].enumerable < results[i].azuki)?'Enumerable':'Azuki').padStart(17)}`
+            `${results[i].functionName.padEnd(14)}|${results[i].oz.toString().padStart(16)}|${results[i].azuki.toString().padStart(9)}|${results[i].enumerable.toString().padStart(12)}|${((results[i].oz < results[i].azuki)?'OZ':'Azuki').padStart(18)}|${((results[i].enumerable < results[i].azuki)?'Enumerable':'Azuki').padStart(19)}`
         );
     }
     console.log('\n');

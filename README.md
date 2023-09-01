@@ -28,6 +28,16 @@ Yes, but it would not be a successful attack since you send the `tokenId` and no
 ## Can ERC721 safeMint suffer from a reentrancy attack?
 Yes, if the token pattern is known, e.g. each token is the last tokenId + 1, a user can call `safeMint` or the minting function the contract is using that calls `_safeMint` with a different token everytime from the `onERC721Received` function. Since thats a private function is not like an external contract can call it, but if the contract inheriting it exposes it on a public function that's here the real reentrancy issue is. e.g: https://blocksecteam.medium.com/when-safemint-becomes-unsafe-lessons-from-the-hypebears-security-incident-2965209bda2a
 
+## Benchmark results for Azuki and OZ Enumerable
+| Function Name | oz(Normal) | azuki | Enumerable | Normal vs Azuki | Enumerable vs Azuki |
+| --- | --- | --- | --- | --- | --- |
+| Mint | 69478 | 90654 | 141416 | OZ | Azuki |
+| Batch mint | 286984 | 73923 | 1189746 | Azuki | Azuki |
+| Transfer | 60996 | 84861 | 93024 | OZ | Azuki |
+| Burn | 29620 | 61123 | 54872 | OZ | Enumerable |
+
+These results were taken with the compiler optimizer being on. The Azuki implementation resulted in a much efficient gas usage during batch minting, but during transfers th difference was minimal, and during burn operations the enumerable token was better at gas usage, so if a project main concern is the batch minting function I would recommend the Azuki token implementation. Regardless the Oz normal implementation resulted in betters gas usage overall therefore I would only use enumerable tokens if it's extremely necessary only.
+
 ## Projects
 - [ ] Deploy a different FORTA bot to practice
 - [ ] Book club governance system
@@ -36,14 +46,3 @@ Yes, if the token pattern is known, e.g. each token is the last tokenId + 1, a u
 - [ ] Rust project TBD
 - [ ] Timelock based withdrawls that alert the user it approved a withdrawl
 - [X] Benchmark gas usage in normal erc721 functions and erc721a
-
-### Benchmark results
-| Function Name | oz(Normal) | azuki | Enumerable | Normal vs Azuki | Enumerable vs Azuki |
-| --- | --- | --- | --- | --- | --- |
-| Mint | 69478 | 90654 | 141416 | OZ | Enumerable |
-| Batch mint | 286984 | 73923 | 1189746 | OZ | Enumerable |
-| Transfer | 60996 | 84861 | 93024 | OZ | Azuki |
-| Burn | 61123 | 61123 | 54872 | Azuki | Enumerable |
-
-
-By the numbers it doesnt look like Azuki is really that much efficient
