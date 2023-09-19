@@ -44,6 +44,8 @@ These results were taken with the compiler optimizer being on. The Azuki impleme
 - [ ] cross chain bridge demo tutorial
 - [ ] Make the cryptomyriad deploy an upgradeable system that upgrades all instances with a beacon proxy
 - [ ] Rust project TBD
+- [ ] Train an LLM on foundry test to be able to auto generate foundry test for a given contract.
+- [ ] Contribute to the solidity compiler to auto compile the storage variable in the most storage optimal order, see how this would work in upgradeability maybe having a flag for that.
 - [ ] A contribution to slither to better check the actual risk of a reentrancy attack, currently alerts if there is the risk ignoring things like a reentrancy guard.
 - [ ] Timelock based withdrawls that alert the user it approved a withdrawl
 - [X] Benchmark gas usage in normal erc721 functions and erc721a
