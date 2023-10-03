@@ -44,6 +44,7 @@ These results were taken with the compiler optimizer being on. The Azuki impleme
 - [ ] cross chain bridge demo tutorial
 - [ ] Make the cryptomyriad deploy an upgradeable system that upgrades all instances with a beacon proxy
 - [ ] Rust project TBD
+- [ ] Missinformation-proof content creation platform where writers must stake some tokens to publish and the articles have a time where validators vote on the veracity of the content and earn a reward if they spot a fraudulent author.
 - [ ] Contribution t foundry to determine base on the function line which state changes should be tested, basically it identify what should it test for after the function runs.
 - [ ] Train an LLM on foundry test to be able to auto generate foundry test for a given contract.
 - [ ] Contribute to the solidity compiler to auto compile the storage variable in the most storage optimal order, see how this would work in upgradeability maybe having a flag for that.
