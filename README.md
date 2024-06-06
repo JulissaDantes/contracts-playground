@@ -1,4 +1,4 @@
-# Sample Hardhat Project
+# Experimental Hardhat Project
  This is the project I use to test cases that intrigue me. Some file are from other repos but I keep them here. Its a typescript project but you can find js files.
 
 ## Installing dependencies
@@ -44,12 +44,12 @@ These results were taken with the compiler optimizer being on. The Azuki impleme
 - [ ] Book club governance system
 - [ ] cross chain bridge demo tutorial
 - [ ] Make the cryptomyriad deploy an upgradeable system that upgrades all instances with a beacon proxy
-- [ ] Rust project TBD
+- [X] Rust project TBD
 - [ ] Missinformation-proof content creation platform where writers must stake some tokens to publish and the articles have a time where validators vote on the veracity of the content and earn a reward if they spot a fraudulent author.
-- [ ] Contribution t foundry to determine base on the function line which state changes should be tested, basically it identify what should it test for after the function runs.
+- [ ] Contribution foundry to determine base on the function line which state changes should be tested, basically it identify what should it test for after the function runs.
 - [ ] Train an LLM on foundry test to be able to auto generate foundry test for a given contract.
 - [ ] Contribute to the solidity compiler to auto compile the storage variable in the most storage optimal order, see how this would work in upgradeability maybe having a flag for that.
 - [ ] A contribution to slither to better check the actual risk of a reentrancy attack, currently alerts if there is the risk ignoring things like a reentrancy guard.
 - [ ] Timelock based withdrawls that alert the user it approved a withdrawl
 - [X] Benchmark gas usage in normal erc721 functions and erc721a
-- [ ] Account abstraction
+- [X] Account abstraction
