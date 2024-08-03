@@ -54,3 +54,4 @@ These results were taken with the compiler optimizer being on. The Azuki impleme
 - [X] Benchmark gas usage in normal erc721 functions and erc721a
 - [X] Account abstraction
 - [ ] Decentralized relayer, check filecoin/IPC relayer
+- [ ] An app to scan QR codes simulate their transaction before signing anything(like a mint buttom) and check that it wont drain the funds in the wallet is performing the transaction to.
