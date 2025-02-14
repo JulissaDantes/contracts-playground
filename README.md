@@ -55,3 +55,4 @@ These results were taken with the compiler optimizer being on. The Azuki impleme
 - [X] Account abstraction
 - [ ] Decentralized relayer, check filecoin/IPC relayer
 - [ ] An app to scan QR codes simulate their transaction before signing anything(like a mint buttom) and check that it wont drain the funds in the wallet is performing the transaction to.
+- [ ] A protocol that interfaces between web2 pages and a crypto wallet allowing user to pay with their crypto while the web page gets its money in fiat, the protocol is in a sense an exchange and charges for each transaction
