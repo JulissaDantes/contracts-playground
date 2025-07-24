@@ -48,7 +48,7 @@ const {
               value: ethers.utils.parseEther("0.01"),
               // Address of the FakeNFT
               to: FakeNFT.address,
-              // In the data field, we pass the function selctor of the mint function
+              // In the data field, we pass the function selector of the mint function
               data: FakeNFT.interface.getSighash("mint()"),
               // Max Gas Fes you are willing to pay
               maxFeePerGas: BigNumber.from(10).pow(9).mul(3),
