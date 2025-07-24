@@ -10,3 +10,24 @@ cache
 artifacts
 
 todos
+
+# Compiler files
+contracts/v4-template/cache/
+contracts/v4-template/out/
+
+# Ignores development (and goerli) broadcast logs
+contracts/v4-template/!/broadcast
+contracts/v4-template//broadcast/*/31337/
+contracts/v4-template//broadcast/*/5/
+contracts/v4-template//broadcast/**/dry-run/
+
+contracts/v4-template/# Docs
+contracts/v4-template/docs/
+
+# Dotenv file
+contracts/v4-template/.env
+
+# Node modules
+contracts/v4-template/node_modules/
+
+contracts/v4-template/lib
