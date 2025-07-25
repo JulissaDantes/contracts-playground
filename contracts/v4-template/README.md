@@ -4,14 +4,11 @@
 
 ### Get Started
 
-This template provides a starting point for writing Uniswap v4 Hooks, including a simple example and preconfigured test environment. Start by creating a new repository using the "Use this template" button at the top right of this page. Alternatively you can also click this link:
-
-[![Use this Template](https://img.shields.io/badge/Use%20this%20Template-101010?style=for-the-badge&logo=github)](https://github.com/uniswapfoundation/v4-template/generate)
+This template provides a starting point for writing Uniswap v4 Hooks, including a simple example and preconfigured test environment. 
 
 1. The example hook [Counter.sol](src/Counter.sol) demonstrates the `beforeSwap()` and `afterSwap()` hooks
 2. The test template [Counter.t.sol](test/Counter.t.sol) pre-configures the v4 pool manager, test tokens, and test liquidity.
 
-<details>
 <summary>Updating to v4-template:latest</summary>
 
 This template is actively maintained -- you can update the v4 dependencies, scripts, and helpers:
@@ -46,14 +43,6 @@ Other than writing unit tests (recommended!), you can only deploy & test hooks o
 ### Troubleshooting
 
 <details>
-
-#### Permission Denied
-
-When installing dependencies with `forge install`, Github may throw a `Permission Denied` error
-
-Typically caused by missing Github SSH keys, and can be resolved by following the steps [here](https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh)
-
-Or [adding the keys to your ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent), if you have already uploaded SSH keys
 
 #### Anvil fork test failures
 
