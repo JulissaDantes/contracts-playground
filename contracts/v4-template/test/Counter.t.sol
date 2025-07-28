@@ -31,10 +31,10 @@ contract CounterTest is Test, Deployers {
     Currency currency0;
     Currency currency1;
 
-    PoolKey poolKey;
+    PoolKey poolKey;//todo
 
     Counter hook;
-    PoolId poolId;
+    PoolId poolId;//todo
 
     uint256 tokenId;
     int24 tickLower;
@@ -47,17 +47,29 @@ contract CounterTest is Test, Deployers {
         (currency0, currency1) = deployCurrencyPair();
 
         // Deploy the hook to an address with the correct flags
-        address flags = address(
+        address flags = address(//todo
             uint160(
-                Hooks.BEFORE_SWAP_FLAG | Hooks.AFTER_SWAP_FLAG | Hooks.BEFORE_ADD_LIQUIDITY_FLAG
-                    | Hooks.BEFORE_REMOVE_LIQUIDITY_FLAG
+                Hooks.BEFORE_INITIALIZE_FLAG
+                | Hooks.AFTER_INITIALIZE_FLAG
+                | Hooks.BEFORE_ADD_LIQUIDITY_FLAG
+                | Hooks.AFTER_ADD_LIQUIDITY_FLAG
+                | Hooks.BEFORE_REMOVE_LIQUIDITY_FLAG
+                | Hooks.AFTER_REMOVE_LIQUIDITY_FLAG
+                | Hooks.BEFORE_SWAP_FLAG
+                | Hooks.AFTER_SWAP_FLAG
+                | Hooks.BEFORE_DONATE_FLAG
+                | Hooks.AFTER_DONATE_FLAG
+                | Hooks.BEFORE_SWAP_RETURNS_DELTA_FLAG
+                | Hooks.AFTER_SWAP_RETURNS_DELTA_FLAG
+                | Hooks.AFTER_ADD_LIQUIDITY_RETURNS_DELTA_FLAG
+                | Hooks.AFTER_REMOVE_LIQUIDITY_RETURNS_DELTA_FLAG
             ) ^ (0x4444 << 144) // Namespace the hook to avoid collisions
         );
         bytes memory constructorArgs = abi.encode(poolManager); // Add all the necessary constructor arguments from the hook
         deployCodeTo("Counter.sol:Counter", constructorArgs, flags);
         hook = Counter(flags);
 
-        // Create the pool
+        // Create the pool //todo
         poolKey = PoolKey(currency0, currency1, 3000, 60, IHooks(hook));
         poolId = poolKey.toId();
         poolManager.initialize(poolKey, Constants.SQRT_PRICE_1_1);
