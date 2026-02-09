@@ -3,7 +3,7 @@ name: X Contracts Running
 on:
     schedule:
         #every 5 minutes
-        - cron: "5 4 * * *"
+        - cron: "0 0 1 1 *"
 jobs:
   check:
     name: Foundry project
