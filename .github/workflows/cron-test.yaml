@@ -20,6 +20,7 @@ jobs:
       - name: Run tests
         id: test
         run: forge test --mc ContractXTest -vvv
+        continue-on-error: true
       - name: Notify Slack
         if: '${{ steps.test.outcome == ''failure'' }}'
         uses: slackapi/slack-github-action@v2.1.1
