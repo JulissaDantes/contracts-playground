@@ -1,7 +1,8 @@
 name: X Contracts Running
-'on':
+on:
   schedule:
-    - cron: "*/3 * * * *"
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
 env:
   SLACK_WEBHOOK_URL: '${{ secrets.SLACK_WEBHOOK_URL }}'
 jobs:
