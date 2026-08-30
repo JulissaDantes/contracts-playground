@@ -12,17 +12,21 @@ import {IRouterClient} from
 import {Client} from
     "chainlink-local/lib/chainlink-ccip/chains/evm/contracts/libraries/Client.sol";
 
-/// @dev Plug and Play script to send CCIP ERC20 tokens between chains. Currently working between base and eth sepolia networks
-contract SendTokenToBase is Script {
-    address internal constant ETH_SEPOLIA_ROUTER =
-        0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59;
+/// @dev Plug and Play script to send CCIP ERC20 tokens between chains. 
+/// forge script script/SendCCIPToken.s.sol:SendCCIPToken --rpc-url $ORIGIN_CHAIN_RPC_URL --private-key $BROADCASTER_KEY --slow --broadcast
+contract SendCCIPToken is Script {
+    address internal constant ORIGIN_CHAIN_ROUTER =
+        0xE1053aE1857476f36A3C62580FF9b016E8EE8F6f;
 
-    uint64 internal constant BASE_SEPOLIA_SELECTOR =
-        10344971235874465080;
+    uint64 internal constant ORIGIN_CHAIN_SELECTOR =
+        13264668187771770619;//bnb smart chain
+
+    uint64 internal constant DEST_CHAIN_SELECTOR =
+        16015286601757825753;//eth sepolia
 
     /// @dev token in hub chain
-    address internal constant HUB_TOKEN =
-        0x0;
+    address internal constant ORIGIN_TOKEN =
+        0X0;//token at bnb sepolia
 
     uint256 internal constant AMOUNT = 1000;
 
@@ -30,14 +34,14 @@ contract SendTokenToBase is Script {
         uint256 key = _getKey();
         address sender = vm.addr(key);
 
-        // Send the token to the same address on Base Sepolia.
+        // Send the token to the same address on remote chain.
         address receiver = sender;
 
         Client.EVMTokenAmount[] memory tokenAmounts =
             new Client.EVMTokenAmount[](1);
 
         tokenAmounts[0] = Client.EVMTokenAmount({
-            token: HUB_TOKEN,
+            token: ORIGIN_TOKEN,
             amount: AMOUNT
         });
 
@@ -55,10 +59,10 @@ contract SendTokenToBase is Script {
             });
 
         IRouterClient router =
-            IRouterClient(ETH_SEPOLIA_ROUTER);
+            IRouterClient(ORIGIN_CHAIN_ROUTER);
 
         uint256 fee = router.getFee(
-            BASE_SEPOLIA_SELECTOR,
+            DEST_CHAIN_SELECTOR,
             message
         );
 
@@ -68,7 +72,7 @@ contract SendTokenToBase is Script {
         console2.log("CCIP fee:", fee);
 
         require(
-            IERC20(HUB_TOKEN).balanceOf(sender) >= AMOUNT,
+            IERC20(ORIGIN_TOKEN).balanceOf(sender) >= AMOUNT,
             "insufficient token balance"
         );
 
@@ -79,13 +83,13 @@ contract SendTokenToBase is Script {
 
         vm.startBroadcast(key);
 
-        IERC20(HUB_TOKEN).approve(
-            ETH_SEPOLIA_ROUTER,
+        IERC20(ORIGIN_TOKEN).approve(
+            ORIGIN_CHAIN_ROUTER,
             AMOUNT
         );
 
         bytes32 messageId = router.ccipSend{value: fee}(
-            BASE_SEPOLIA_SELECTOR,
+            DEST_CHAIN_SELECTOR,
             message
         );
 
