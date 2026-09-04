@@ -94,7 +94,7 @@ contract SendCCIPToken is Script {
         );
 
         vm.stopBroadcast();
-
+        console2.log("Message ID: ");
         console2.logBytes32(messageId);
     }
 
