@@ -42,7 +42,7 @@ These results were taken with the compiler optimizer being on. The Azuki impleme
 - [ ] Deploy a different FORTA bot to practice
 - [ ] A project for banks to use, have ERC6551 token, token bound account, where to mint the user request mint with their id then we use chainlink to call the service checking the ids validity if its valid it mints an nft to the address and the nft wallet is what the users can withdraw from in the bank.Maybe check what worldcoin offers for this
 - [ ] Book club governance system
-- [ ] cross chain bridge demo tutorial
+- [X] cross chain bridge demo tutorial
 - [ ] Make the cryptomyriad deploy an upgradeable system that upgrades all instances with a beacon proxy
 - [X] Rust project TBD
 - [ ] Missinformation-proof content creation platform where writers must stake some tokens to publish and the articles have a time where validators vote on the veracity of the content and earn a reward if they spot a fraudulent author.
