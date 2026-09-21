@@ -7,10 +7,10 @@ import {IERC20} from
     "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 
 import {IRouterClient} from
-    "chainlink-local/lib/chainlink-ccip/chains/evm/contracts/interfaces/IRouterClient.sol";
+    "chainlink-ccip/chains/evm/contracts/interfaces/IRouterClient.sol";
 
 import {Client} from
-    "chainlink-local/lib/chainlink-ccip/chains/evm/contracts/libraries/Client.sol";
+    "chainlink-ccip/chains/evm/contracts/libraries/Client.sol";
 
 /// @dev Plug and Play script to send CCIP ERC20 tokens between chains. 
 /// forge script script/SendCCIPToken.s.sol:SendCCIPToken --rpc-url $ORIGIN_CHAIN_RPC_URL --private-key $BROADCASTER_KEY --slow --broadcast
@@ -24,7 +24,6 @@ contract SendCCIPToken is Script {
     uint64 internal constant DEST_CHAIN_SELECTOR =
         16015286601757825753;//eth sepolia
 
-    /// @dev token in hub chain
     address internal constant ORIGIN_TOKEN =
         0X0;//token at bnb sepolia
 
