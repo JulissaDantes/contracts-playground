@@ -129,9 +129,6 @@ async function propose(config: ChainConfig) {
     )
   }
 
-  //
-  // Connect to Ledger
-  //
   const transport = await HIDTransport.create()
 
   try {
@@ -140,116 +137,102 @@ async function propose(config: ChainConfig) {
     const ledgerSigner = new LedgerSigner(
       transport,
       provider,
-      process.env.LEDGER_PATH ?? "m/44'/60'/1'/0/0",
+      process.env.LEDGER_PATH ?? "m/44'/60'/0'/0/0",
     )
 
     const ledgerAddress = await ledgerSigner.getAddress()
 
-    console.log(`Ledger signer: ${ledgerAddress}`)
+    console.log(`Ledger proposer: ${ledgerAddress}`)
 
     //
-    // Initialize Protocol Kit.
-    //
-    // We only give Safe the owner's address here.
-    // The Ledger signing itself happens below.
+    // No Safe owner requirement here.
+    // This address is a registered Safe proposer/delegate.
     //
     const protocolKit = await Safe.init({
       provider: config.rpcUrl,
-      signer: ledgerAddress,
       safeAddress: config.safeAddress,
     })
 
-    //
-    // Verify Ledger is actually an owner of this Safe.
-    //
-    const owners = await protocolKit.getOwners()
-
-    const isOwner = owners.some(
-      (owner) =>
-        owner.toLowerCase() === ledgerAddress.toLowerCase(),
-    )
-
-    if (!isOwner) {
-      throw new Error(
-        `${ledgerAddress} is not an owner of Safe ${config.safeAddress}`,
-      )
-    }
-
-    console.log("Ledger is a Safe owner ✓")
-
-    //
-    // Turn the 261 JSON transactions into ONE Safe multisend.
-    //
-    const transactions = toSafeTransactions(batch)
-
-    const safeTransaction =
-      await protocolKit.createTransaction({
-        transactions,
-        onlyCalls: true,
-      })
-
-    //
-    // Compute the Safe transaction hash.
-    //
-    const safeTxHash =
-      await protocolKit.getTransactionHash(safeTransaction)
-
-    console.log(`Safe transaction hash: ${safeTxHash}`)
-
-    //
-    // Ledger signs the 32-byte Safe transaction hash.
-    //
-    console.log(
-      "\nConfirm the Safe proposal on your Ledger...",
-    )
-
-    const ledgerSignature =
-      await ledgerSigner.signMessage(
-        getBytes(safeTxHash),
-      )
-
-    //
-    // Convert normal eth_sign v=27/28 into
-    // Safe ETH_SIGN v=31/32.
-    //
-    const safeSignature =
-      convertLedgerSignatureToSafe(
-        ledgerSignature,
-      )
-
-    console.log("Ledger signature obtained ✓")
-
-    //
-    // Safe Transaction Service client.
-    //
-    // chainId determines which network's Safe service
-    // receives this proposal.
-    //
     const apiKit = new SafeApiKit({
       chainId: config.chainId,
       apiKey: process.env.SAFE_API_KEY!,
     })
 
     //
-    // Submit the ONE multisend proposal.
+    // Important:
+    // use Transaction Service's next available nonce,
+    // including already-pending Safe proposals.
     //
+    const nonce = await apiKit.getNextNonce(
+      config.safeAddress,
+    )
+
+    console.log(`Safe nonce: ${nonce}`)
+
+    const transactions = toSafeTransactions(batch)
+
+    //
+    // 261 transactions become ONE MultiSend Safe tx.
+    //
+    const safeTransaction =
+      await protocolKit.createTransaction({
+        transactions,
+        onlyCalls: true,
+        options: {
+          nonce,
+        },
+      })
+
+    const safeTxHash =
+      await protocolKit.getTransactionHash(
+        safeTransaction,
+      )
+
+    console.log(
+      `Safe transaction hash: ${safeTxHash}`,
+    )
+
+    console.log(
+      "\nConfirm proposal signature on Ledger...",
+    )
+
+    //
+    // The Ledger proposer signs the Safe transaction
+    // hash to authenticate itself to the Transaction Service.
+    //
+    // This is NOT an owner confirmation and does NOT
+    // count toward the Safe threshold.
+    //
+    const ledgerSignature =
+      await ledgerSigner.signMessage(
+        getBytes(safeTxHash),
+      )
+
+    const proposerSignature =
+      convertLedgerSignatureToSafe(
+        ledgerSignature,
+      )
+
+    console.log(
+      `Proposal signed by: ${ledgerAddress}`,
+    )
+
     await apiKit.proposeTransaction({
       safeAddress: config.safeAddress,
-
       safeTransactionData:
         safeTransaction.data,
-
       safeTxHash,
-
       senderAddress: ledgerAddress,
-
-      senderSignature: safeSignature,
-
+      senderSignature: proposerSignature,
       origin: "OFAC restriction batch",
     })
 
     console.log(
-      `✅ ${config.name} proposal submitted`,
+      `\n✅ ${config.name} proposal submitted`,
+    )
+
+    console.log(
+      `Safe Tx Hash: ${safeTxHash}`,
     )
   } finally {
     await transport.close()
