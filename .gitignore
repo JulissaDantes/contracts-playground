@@ -31,3 +31,5 @@ contracts/v4-template/.env
 contracts/v4-template/node_modules/
 
 contracts/v4-template/lib
+
+safe-restrictions/*-restrict.json
