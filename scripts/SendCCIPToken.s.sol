@@ -4,7 +4,8 @@ pragma solidity 0.8.30;
 import {Script, console2} from "forge-std/Script.sol";
 
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
-
+import {ExtraArgsCodec} from
+    "chainlink-ccip/chains/evm/contracts/libraries/ExtraArgsCodec.sol";
 import {IRouterClient} from "chainlink-ccip/chains/evm/contracts/interfaces/IRouterClient.sol";
 
 import {Client} from "chainlink-ccip/chains/evm/contracts/libraries/Client.sol";
@@ -18,12 +19,13 @@ contract SendCCIPToken is Script {
         uint64 originSelector;
         uint64 destSelector;
     }
-    address constant HUB_ROUTER = ;
-    address constant SPOKE_ROUTER = ; //bnb
-    uint64 constant HUB_SELECTOR = ;
-    uint64 constant SPOKE_SELECTOR = ; //bnb
-    address constant HUB_ASSET_TOKEN = ;
-    address constant SPOKE_ASSET_TOKEN = ;
+
+    uint256 internal constant AMOUNT = 1;
+    
+    bytes4 internal constant REQUESTED_FINALITY = 0x0000000f;   // 15 confirmations
+    uint64 constant HUB_SELECTOR = 5009297550715157269;
+    address constant HUB_ROUTER = 0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D;
+    address constant HUB_ASSET_TOKEN = 0x0;
 
     Config internal hub = Config({
         originRouter: HUB_ROUTER,
@@ -38,8 +40,6 @@ contract SendCCIPToken is Script {
         originSelector: SPOKE_SELECTOR,
         destSelector: HUB_SELECTOR
     });
-
-    uint256 internal constant AMOUNT = 20;
 
     function run() external {
         Config memory config;
@@ -58,13 +58,16 @@ contract SendCCIPToken is Script {
 
         tokenAmounts[0] = Client.EVMTokenAmount({token: config.originToken, amount: AMOUNT});
 
-        Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
-            receiver: abi.encode(receiver),
-            data: "",
-            tokenAmounts: tokenAmounts,
-            feeToken: address(0),
-            extraArgs: Client._argsToBytes(Client.EVMExtraArgsV1({gasLimit: 0}))
-        });
+Client.EVM2AnyMessage memory message = Client.EVM2AnyMessage({
+    receiver: abi.encode(receiver),
+    data: "",
+    tokenAmounts: tokenAmounts,
+    feeToken: address(0),
+    extraArgs: ExtraArgsCodec._getBasicEncodedExtraArgsV3(
+        0,
+        REQUESTED_FINALITY
+    )
+});
 
         IRouterClient router = IRouterClient(config.originRouter);
 
@@ -91,7 +94,7 @@ contract SendCCIPToken is Script {
     }
 
     function _getKey() internal view returns (uint256) {
-        string memory rawKey = vm.envString("BROADCASTER_KEY");
+        string memory rawKey = vm.envString("KEY");
 
         bytes memory value = bytes(rawKey);
 
