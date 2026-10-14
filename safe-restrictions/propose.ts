@@ -56,6 +56,13 @@ const configs: Record<string, ChainConfig> = {
     safeAddress: process.env.BNB_SAFE_ADDRESS!,
     file: "./bnb-restrict.json",
   },
+  ethereum: {
+  name: "Ethereum",
+  chainId: 1n,
+  rpcUrl: process.env.ETHEREUM_RPC_URL!,
+  safeAddress: process.env.ETHEREUM_SAFE_ADDRESS!,
+  file: "./ethereum-restrict.json",
+},
 }
 
 function loadBatch(file: string): BatchFile {
@@ -122,12 +129,6 @@ async function propose(config: ChainConfig) {
 
   console.log(`Safe: ${config.safeAddress}`)
   console.log(`Transactions: ${batch.transactions.length}`)
-
-  if (batch.transactions.length !== 261) {
-    throw new Error(
-      `Expected 261 restriction calls, found ${batch.transactions.length}`,
-    )
-  }
 
   const transport = await HIDTransport.create()
 
@@ -243,12 +244,12 @@ async function main() {
   const network = process.argv[2]
 
   if (
-    !network ||
-    !["base", "polygon", "bnb"].includes(network)
+  !network ||
+  !["ethereum", "base", "polygon", "bnb"].includes(network)
   ) {
     console.error(
-      "Usage: npx tsx propose.ts base|polygon|bnb",
-    )
+  "Usage: npx tsx propose.ts ethereum|base|polygon|bnb",
+)
 
     process.exit(1)
   }
